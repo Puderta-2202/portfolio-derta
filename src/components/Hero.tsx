@@ -61,7 +61,7 @@ export default function Hero() {
               Lihat Proyek Saya <ArrowRight size={17} />
             </a>
             <a
-                href="/cv/CV_ATS_PUDERTA-SINULINGGA.pdf"
+                href="/cv/Puderta_Sinulingga.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 border-2 border-sky-200 hover:border-sky-400 text-slate-700 hover:text-sky-500 font-semibold px-7 py-3.5 rounded-xl transition-all hover:-translate-y-0.5"
