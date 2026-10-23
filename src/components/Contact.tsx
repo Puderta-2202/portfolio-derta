@@ -1,27 +1,118 @@
 import { useState } from 'react';
-import { Mail, Send, ArrowRight } from 'lucide-react';
-import { GithubIcon, LinkedinIcon, InstagramIcon } from './BrandIcons';
+import { ArrowRight, Mail, Send } from 'lucide-react';
+import { GithubIcon, InstagramIcon, LinkedinIcon } from './BrandIcons';
 
 const SOCIALS = [
-  { icon: Mail, label: 'Email', value: 'pudertalingga2202@email.com', href: 'mailto:pudertalingga2202@email.com' },
-  { icon: LinkedinIcon, label: 'LinkedIn', value: 'Puderta Sinulingga', href: 'https://www.linkedin.com/in/puderta-sinulingga-173984362?utm_source=share_via&utm_content=profile&utm_medium=member_android' },
-  { icon: GithubIcon, label: 'GitHub', value: 'Puderta-2202', href: 'https://github.com/Puderta-2202' },
-  { icon: InstagramIcon, label: 'Instagram', value: 'dertaaa__', href: 'https://www.instagram.com/dertaaa__' },
+  {
+    icon: Mail,
+    label: 'Email',
+    value: 'pudertalingga2202@gmail.com',
+    href: 'mailto:pudertalingga2202@gmail.com',
+  },
+  {
+    icon: LinkedinIcon,
+    label: 'LinkedIn',
+    value: 'Puderta Sinulingga',
+    href: 'https://www.linkedin.com/in/puderta-sinulingga-173984362?utm_source=share_via&utm_content=profile&utm_medium=member_android',
+  },
+  {
+    icon: GithubIcon,
+    label: 'GitHub',
+    value: 'Puderta-2202',
+    href: 'https://github.com/Puderta-2202',
+  },
+  {
+    icon: InstagramIcon,
+    label: 'Instagram',
+    value: 'dertaaa__',
+    href: 'https://www.instagram.com/dertaaa__',
+  },
 ];
 
-export default function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
-  const [sent, setSent] = useState(false);
+type FormSubmitResponse = {
+  success?: boolean | string;
+  message?: string;
+};
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+export default function Contact() {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+  const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    setForm((previous) => ({
+      ...previous,
+      [e.target.name]: e.target.value,
+    }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
-    setForm({ name: '', email: '', message: '' });
+    setSending(true);
+    setSent(false);
+    setError('');
+
+    try {
+      const response = await fetch(
+        'https://formsubmit.co/ajax/pudertalingga2202@gmail.com',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            message: form.message,
+            _subject: `Pesan portfolio dari ${form.name}`,
+            _replyto: form.email,
+          }),
+        },
+      );
+
+      const responseText = await response.text();
+      let result: FormSubmitResponse;
+
+      try {
+        result = JSON.parse(responseText) as FormSubmitResponse;
+      } catch {
+        console.error('Respons FormSubmit bukan JSON:', responseText);
+        throw new Error(
+          'FormSubmit mengembalikan respons yang tidak dikenali. Periksa Console dan konfirmasi email penerima di FormSubmit.',
+        );
+      }
+
+      if (!response.ok || result.success === false || result.success === 'false') {
+        throw new Error(result.message || 'Pengiriman pesan gagal.');
+      }
+
+      if (result.success !== true && result.success !== 'true') {
+        console.error('Respons FormSubmit:', result);
+        throw new Error(
+          result.message || 'FormSubmit belum mengonfirmasi pengiriman pesan.',
+        );
+      }
+
+      setSent(true);
+      setForm({ name: '', email: '', message: '' });
+    } catch (err) {
+      console.error('Gagal mengirim pesan:', err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Pesan belum berhasil dikirim. Periksa koneksi internet dan coba lagi.',
+      );
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -44,9 +135,9 @@ export default function Contact() {
             </h2>
 
             <p className="text-slate-500 leading-relaxed mb-10 text-[15px]">
-              Memiliki proyek, ide, atau ingin berkolaborasi? Mari terhubung dan menciptakan
-              sesuatu yang bermakna. Saya terbuka untuk peluang kerja, proyek freelance,
-              maupun kolaborasi penelitian.
+              Memiliki proyek, ide, atau ingin berkolaborasi? Mari terhubung dan
+              menciptakan sesuatu yang bermakna. Saya terbuka untuk peluang
+              kerja, proyek freelance, maupun kolaborasi penelitian.
             </p>
 
             <div className="flex flex-col gap-4">
@@ -57,13 +148,25 @@ export default function Contact() {
                   className="flex items-center gap-4 p-4 border border-sky-100 rounded-2xl hover:border-sky-300 hover:bg-sky-50 transition-all group"
                 >
                   <div className="w-10 h-10 bg-sky-50 border border-sky-200 rounded-xl flex items-center justify-center group-hover:bg-sky-400 group-hover:border-sky-400 transition-all flex-shrink-0">
-                    <Icon size={18} className="text-sky-500 group-hover:text-white transition-colors" />
+                    <Icon
+                      size={18}
+                      className="text-sky-500 group-hover:text-white transition-colors"
+                    />
                   </div>
+
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{label}</p>
-                    <p className="text-sm font-semibold text-slate-700 truncate">{value}</p>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                      {label}
+                    </p>
+                    <p className="text-sm font-semibold text-slate-700 truncate">
+                      {value}
+                    </p>
                   </div>
-                  <ArrowRight size={16} className="text-sky-300 group-hover:text-sky-500 transition-colors flex-shrink-0" />
+
+                  <ArrowRight
+                    size={16}
+                    className="text-sky-300 group-hover:text-sky-500 transition-colors flex-shrink-0"
+                  />
                 </a>
               ))}
             </div>
@@ -71,20 +174,39 @@ export default function Contact() {
 
           {/* Kanan: Form */}
           <div className="bg-sky-50/50 border border-sky-100 rounded-3xl p-8">
-            <h3 className="text-xl font-bold text-slate-900 mb-6">Kirim Pesan</h3>
+            <h3 className="text-xl font-bold text-slate-900 mb-6">
+              Kirim Pesan
+            </h3>
 
             {sent && (
-              <div className="mb-6 bg-sky-400 text-white text-sm font-semibold px-4 py-3 rounded-xl flex items-center gap-2">
-                <span>✓</span> Pesan berhasil dikirim! Saya akan segera menghubungi Anda kembali.
+              <div
+                role="status"
+                className="mb-6 bg-sky-400 text-white text-sm font-semibold px-4 py-3 rounded-xl flex items-center gap-2"
+              >
+                <span>✓</span> Pesan berhasil dikirim! Saya akan segera
+                menghubungi Anda kembali.
+              </div>
+            )}
+
+            {error && (
+              <div
+                role="alert"
+                className="mb-6 bg-red-100 text-red-700 text-sm font-semibold px-4 py-3 rounded-xl"
+              >
+                {error}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
+                <label
+                  htmlFor="contact-name"
+                  className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2"
+                >
                   Nama
                 </label>
                 <input
+                  id="contact-name"
                   type="text"
                   name="name"
                   value={form.name}
@@ -96,10 +218,14 @@ export default function Contact() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
+                <label
+                  htmlFor="contact-email"
+                  className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2"
+                >
                   Email
                 </label>
                 <input
+                  id="contact-email"
                   type="email"
                   name="email"
                   value={form.email}
@@ -111,10 +237,14 @@ export default function Contact() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
+                <label
+                  htmlFor="contact-message"
+                  className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2"
+                >
                   Pesan
                 </label>
                 <textarea
+                  id="contact-message"
                   name="message"
                   value={form.message}
                   onChange={handleChange}
@@ -127,9 +257,11 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 bg-sky-400 hover:bg-sky-500 text-white font-semibold px-6 py-3.5 rounded-xl transition-all hover:shadow-lg hover:shadow-sky-200 hover:-translate-y-0.5 mt-1"
+                disabled={sending}
+                className="inline-flex items-center justify-center gap-2 bg-sky-400 hover:bg-sky-500 text-white font-semibold px-6 py-3.5 rounded-xl transition-all hover:shadow-lg hover:shadow-sky-200 hover:-translate-y-0.5 mt-1 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Kirim Pesan <Send size={16} />
+                {sending ? 'Mengirim...' : 'Kirim Pesan'}
+                <Send size={16} />
               </button>
             </form>
           </div>

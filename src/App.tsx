@@ -6,6 +6,7 @@ import Projects from './components/Projects';
 import Timeline from './components/Timeline';
 import Research from './components/Research';
 import Services from './components/Services';
+import Certificates from './components/Certificates';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
@@ -21,6 +22,7 @@ export default function App() {
         <Timeline />
         <Research />
         <Services />
+        <Certificates />
         <Contact />
       </main>
       <Footer />

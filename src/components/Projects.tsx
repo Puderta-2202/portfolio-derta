@@ -10,7 +10,7 @@ const PROJECTS = [
       'Sistem manajemen perpustakaan digital untuk Dinas Lingkungan Hidup Kota Medan. Sistem ini menangani pengelolaan dokumen, kategori bidang, hak akses pengguna, arsip digital, dan pencarian lanjutan — menggantikan alur kerja berbasis kertas dengan sistem yang sepenuhnya digital.',
     stack: ['Laravel', 'React', 'TypeScript', 'Tailwind CSS', 'MySQL'],
     image:
-      'https://images.unsplash.com/photo-1733412505442-36cfa59a4240?w=900&h=560&fit=crop&auto=format',
+      '/images/e-library.png',
     alt: 'Dashboard E-Library dengan kode pada layar',
     imageLeft: true,
   },
@@ -22,7 +22,7 @@ const PROJECTS = [
       'Sistem computer vision berbasis kecerdasan buatan untuk mendeteksi penyakit pada daun kopi secara real-time menggunakan framework deteksi objek YOLO dengan backbone ringan SqueezeNet. Model dilatih dan divalidasi menggunakan 5-fold cross-validation untuk memperoleh performa yang lebih robust pada kondisi lapangan.',
     stack: ['Python', 'YOLO', 'SqueezeNet', 'PyTorch', 'OpenCV', 'Computer Vision'],
     image:
-      'https://images.unsplash.com/photo-1762491643902-1e072f8f90fd?w=900&h=560&fit=crop&auto=format',
+      '/images/web.png',
     alt: 'Daun tanaman kopi berwarna hijau',
     imageLeft: false,
   },
