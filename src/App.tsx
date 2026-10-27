@@ -9,6 +9,7 @@ import Services from './components/Services';
 import Certificates from './components/Certificates';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import PortfolioAssistant from './components/PortfolioAssistant';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <PortfolioAssistant />
     </div>
   );
 }
